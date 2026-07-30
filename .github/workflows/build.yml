@@ -10,14 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Build APK with Docker
+      - name: Build APK
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app kivy/buildozer:latest android debug || true
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            kivy/buildozer:latest \
+            sh -c "yes | buildozer android debug"
+      
+      - name: List output
+        run: ls -la bin/ 2>/dev/null || echo "No bin dir"
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: success() || failure()
         with:
-          name: SMS-Bomber-Android
-          path: bin/*
-          compression-level: 0
+          name: SMS-Bomber-Android-APK
+          path: bin/*.apk

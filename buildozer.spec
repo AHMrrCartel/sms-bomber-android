@@ -1,11 +1,11 @@
 [app]
 title = SMS Bomber v8.0
-package.name = smsbomber
+package.name = smsbomberultimate
 package.domain = org.cartel
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 8.0
-requirements = python3,kivy,requests,urllib3
+requirements = python3,kivy==2.2.1,requests,urllib3
 orientation = portrait
 osx.python_version = 3
 osx.kivy_version = 2.2.0
@@ -15,15 +15,15 @@ android.api = 33
 android.minapi = 21
 android.sdk = 34
 android.ndk = 25b
+android.ndk_path =
+android.sdk_path =
 android.preserve_lib_archs = True
-android.archs = arm64-v8a
+android.archs = arm64-v8a,armeabi-v7a
 android.permissions = INTERNET
 android.wakelock = True
-android.add_src =
-android.add_res =
-android.gradle_dependencies = []
-android.enable_apk_expansion = False
 android.install_locations = auto
-android.allow_backup = True
+android.allow_backup = False
 android.enable_google_licensing = False
-android.background = True
+android.gradle_dependencies = []
+android.enable_androidx = True
+android.google_play_services = False

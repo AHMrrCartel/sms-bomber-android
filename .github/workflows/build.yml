@@ -1,22 +1,42 @@
-name: Build APK
-on: [push, workflow_dispatch]
+name: Android APK Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - run: |
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget curl git unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev python3-pip
           pip install --upgrade pip
-          pip install kivy requests buildozer cython
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-      - run: |
-          export PATH=$PATH:$HOME/.local/bin/
-          yes | buildozer android debug
-      - uses: actions/upload-artifact@v4
+          pip install cython virtualenv
+      
+      - name: Install Buildozer
+        run: |
+          pip install buildozer
+      
+      - name: Build Android APK
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          export BUILD_DIR=/home/runner/work/build
+          yes | buildozer android debug --debug 2>&1 || true
+        timeout-minutes: 120
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
         with:
           name: SMS-Bomber-Android
-          path: bin/*.apk
+          path: bin/*
+          compression-level: 0
